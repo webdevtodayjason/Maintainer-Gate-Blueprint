@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [{{MAIN_BRANCH}}, {{DEV_BRANCH}}]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pr-intake:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: {{RUNTIME_VERSION}}
+
+      - name: Verify PR intake
+        run: node scripts/check-pr-intake.mjs
+
+  install-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: {{RUNTIME_VERSION}}
+
+      - name: Install dependencies
+        run: {{PACKAGE_MANAGER_INSTALL_COMMAND}}
+
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - task: check
+            command: {{CI_CHECK_COMMAND}}
+          - task: build
+            command: {{CI_BUILD_COMMAND}}
+          - task: protocol
+            command: {{CI_PROTOCOL_COMMAND}}
+          - task: test
+            command: {{CI_TEST_COMMAND}}
+          - task: dashboard
+            command: {{CI_DASHBOARD_COMMAND}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: {{RUNTIME_VERSION}}
+
+      - name: Install dependencies
+        run: {{PACKAGE_MANAGER_INSTALL_COMMAND}}
+
+      - name: Run ${{ matrix.task }}
+        run: ${{ matrix.command }}

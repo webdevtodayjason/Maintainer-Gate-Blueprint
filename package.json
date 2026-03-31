@@ -1,0 +1,10 @@
+{
+  "name": "maintainer-gate-blueprint",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "apply": "node bin/apply-blueprint.mjs",
+    "check": "node --check bin/apply-blueprint.mjs && node --check templates/scripts/check-handoff.mjs && node --check templates/scripts/check-pr-intake.mjs"
+  }
+}

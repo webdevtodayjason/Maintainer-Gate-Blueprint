@@ -1,0 +1,23 @@
+{
+  "PROJECT_NAME": "ExampleOS",
+  "REPO_NAME": "exampleos",
+  "REPO_ROOT_PATH": "/Users/sem/code/exampleos",
+  "DOCS_REPO_PATH": "/Users/sem/code/exampleos-docs",
+  "DOCS_SITE_URL": "https://docs.exampleos.ai",
+  "ISSUE_TRACKER_NAME": "Linear",
+  "ISSUE_TRACKER_NOTE": "Check or create a Linear issue before significant work. If the tracker is unavailable in-session, record that in ops.",
+  "THREADMASTER_ROLE": "Threadmaster",
+  "OPERATOR_ROLE": "operator",
+  "DEV_BRANCH": "develop",
+  "MAIN_BRANCH": "main",
+  "DEV_WORKSPACE_PATH": "/Users/sem/code/exampleos",
+  "DEVELOP_CLEAN_PATH": "/Users/sem/code/exampleos-develop-clean",
+  "TRUNK_CLEAN_PATH": "/Users/sem/code/exampleos-main-clean",
+  "PACKAGE_MANAGER_INSTALL_COMMAND": "pnpm install",
+  "CI_BUILD_COMMAND": "pnpm build",
+  "CI_CHECK_COMMAND": "pnpm check",
+  "CI_TEST_COMMAND": "pnpm test",
+  "CI_PROTOCOL_COMMAND": "pnpm protocol:check",
+  "CI_DASHBOARD_COMMAND": "pnpm --dir dashboard build",
+  "RUNTIME_VERSION": "22.x"
+}
