@@ -7,7 +7,9 @@ Required workflow:
    - `{{REPO_ROOT_PATH}}/ops/README.md`
    - `{{REPO_ROOT_PATH}}/ops/rules/agent-coordination.md`
    - `{{REPO_ROOT_PATH}}/ops/rules/branching.md`
+   - `{{REPO_ROOT_PATH}}/ops/rules/linear.md`
    - `{{REPO_ROOT_PATH}}/ops/runbooks/dev-workflow.md`
+   - `{{REPO_ROOT_PATH}}/ops/runbooks/research-planning.md` when the request is research, comparison, architecture, or planning only
    - `{{REPO_ROOT_PATH}}/ops/runbooks/slice-management.md`
    - `{{REPO_ROOT_PATH}}/ops/runbooks/threadmaster-handoff.md`
    - `{{REPO_ROOT_PATH}}/AGENTS.md`
@@ -33,6 +35,12 @@ Required workflow:
     - that {{THREADMASTER_ROLE}} must reconstruct in the clean dev/release lane first
     - that {{OPERATOR_ROLE}} or human validation is required before any recommendation to merge to `{{MAIN_BRANCH}}`
 12. Present the {{OPERATOR_ROLE}} with the handoff document.
+
+If the user asks for research or planning without implementation:
+- perform the research first
+- create an ops planning package instead of code changes
+- create a tracking issue if the plan is meant to drive future implementation
+- use planning-only slice semantics instead of implementation-ready semantics
 
 Complete the implementation and report back with:
 - problem summary and root cause

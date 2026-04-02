@@ -5,7 +5,9 @@ Required workflow:
    - `{{REPO_ROOT_PATH}}/ops/README.md`
    - `{{REPO_ROOT_PATH}}/ops/rules/agent-coordination.md`
    - `{{REPO_ROOT_PATH}}/ops/rules/branching.md`
+   - `{{REPO_ROOT_PATH}}/ops/rules/linear.md`
    - `{{REPO_ROOT_PATH}}/ops/runbooks/dev-workflow.md`
+   - `{{REPO_ROOT_PATH}}/ops/runbooks/research-planning.md` when the request is research, comparison, architecture, or planning only
    - `{{REPO_ROOT_PATH}}/ops/runbooks/slice-management.md`
    - `{{REPO_ROOT_PATH}}/ops/runbooks/threadmaster-handoff.md`
    - `{{REPO_ROOT_PATH}}/AGENTS.md`
@@ -20,6 +22,12 @@ Required workflow:
    - treat `{{DOCS_REPO_PATH}}` as a separate repo with a separate slice and separate handoff if public docs need changes
 8. Run the most direct validation for the touched surface and report results truthfully as `PASS`, `FAIL`, or `NOT RUN`.
 9. If handoff is needed, use the canonical packet in `ops/runbooks/threadmaster-handoff.md`.
+
+If the user asks for research or a feature plan without implementation:
+- do the research first
+- convert it into an ops planning package
+- do not start implementation unless the user explicitly asks
+- use planning-only tracking semantics instead of implementation-ready semantics
 
 Complete the implementation and report back with:
 - problem summary and root cause

@@ -12,7 +12,8 @@ lives at `ops/` in the private `{{REPO_NAME}}` repo.
 3. Finishing work? Update `REGISTRY.md`, update `projects/ACTIVE.md`, write a log entry
 4. Need a process? Check `runbooks/` before improvising
 5. Handing work back to {{THREADMASTER_ROLE}}? Follow `runbooks/threadmaster-handoff.md`
-6. Unsure about a rule? Check `rules/` because they override your instincts
+6. Research or architecture request? Follow `runbooks/research-planning.md`
+7. Unsure about a rule? Check `rules/` because they override your instincts
 
 Threadmaster handoffs are machine-checkable:
 
@@ -28,6 +29,7 @@ ops/
 ├── runbooks/
 │   ├── dev-workflow.md
 │   ├── maintainer-gate.md
+│   ├── research-planning.md
 │   ├── slice-management.md
 │   └── threadmaster-handoff.md
 ├── projects/
