@@ -55,14 +55,59 @@ ops/
     └── JOURNAL.md
 ```
 
+## Patrol Cycle (Visual)
+
+```mermaid
+flowchart TD
+    START[Patrol Cycle Starts<br/>Every 30 min] --> P0[Phase 0: Sync & Review<br/>git pull + re-read runbooks<br/>Check REGISTRY + ACTIVE]
+    
+    P0 --> SITE{Site Health}
+    SITE -->|DOWN| ALERT[Send Alert Email]
+    SITE -->|UP| CI{CI Health}
+    CI -->|RED| CIISSUE[Auto-create Issue]
+    CI -->|GREEN| ISSUES[Check GitHub Issues]
+    CIISSUE --> ISSUES
+    
+    ISSUES -->|No issues| WAIT[Wait 30 min]
+    ISSUES -->|Issues found| CLASSIFY{Classify}
+    
+    CLASSIFY -->|FEATURE| FR[Escalate]
+    CLASSIFY -->|BUG| BATCH[ONE branch for cycle]
+    
+    FR --> NEXT{More?}
+    BATCH --> FIX[Fix + commit]
+    FIX --> NEXT
+    NEXT -->|Yes| CLASSIFY
+    NEXT -->|Done| BUILD{Build}
+    
+    BUILD -->|Fail| FIXB[Fix]
+    FIXB --> BUILD
+    BUILD -->|Pass| PR[ONE PR for batch]
+    
+    PR --> G1{CI} --> G2{Review} --> G3[Email] --> G4[MERGE]
+    G4 --> CLOSE[Close all issues]
+    CLOSE --> WAIT
+
+    style ALERT fill:#ef4444,color:#fff
+    style FR fill:#f59e0b,color:#000
+    style P0 fill:#8b5cf6,color:#fff
+    style G3 fill:#22c55e,color:#000
+    style G4 fill:#22c55e,color:#000
+    style WAIT fill:#64748b,color:#fff
+    style BATCH fill:#0ea5e9,color:#fff
+    style PR fill:#0ea5e9,color:#fff
+```
+
 ## Patrol Stations
 
-Two machines run continuous AI agent loops for automated monitoring and development:
+Two machines run continuous AI agent loops:
 
-| Station | Machine | Runbook | What It Does |
-|---------|---------|---------|-------------|
-| **Bug Patrol** | {{AUTOMATION_MAC_NAME}} | `runbooks/bug-patrol.md` | Monitors issues every 30 min, auto-fixes bugs, escalates feature requests |
-| **Feature Patrol** | {{PRIMARY_MAC_NAME}} | `runbooks/feature-patrol.md` | Monitors issues, builds approved features, health checks |
+| Station | Machine | Session | Runbook | Role |
+|---------|---------|---------|---------|------|
+| **Bug Patrol** | {{AUTOMATION_MAC_NAME}} | `{{AUTOMATION_MAC_SESSION}}` | `runbooks/bug-patrol.md` | Auto-fix bugs, escalate features |
+| **Feature Patrol** | {{PRIMARY_MAC_NAME}} | `{{PRIMARY_MAC_SESSION}}` | `runbooks/feature-patrol.md` | Build approved features, monitor |
+
+Both follow the **loop contract** (`runbooks/loop-contract.md`) and share quality gates (`runbooks/pr-workflow.md`).
 
 Both share the same quality gates: `runbooks/pr-workflow.md`
 
