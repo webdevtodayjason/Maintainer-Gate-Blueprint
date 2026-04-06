@@ -22,11 +22,12 @@ Start the feature patrol loop:
 Every cycle:
 
 1. **Health check**: `curl -s -o /dev/null -w "%{http_code}" {{SITE_URL}}` — alert if non-200
-2. **Check issues**: `gh issue list --repo {{GH_ORG}}/{{REPO_NAME}} --state open`
-3. **Classify** each issue as BUG or FEATURE REQUEST
-4. **For bugs**: Create branch, fix, PR, wait for CI + review, send PR email (same as Bug Patrol)
-5. **For feature requests**: Escalate with `bash scripts/send-escalation-email.sh <issue-number>`
-6. **For approved features**: Pick up and build (this is what distinguishes Feature Patrol)
+2. **CI health check**: `bash scripts/check-ci-health.sh --auto-issue` — if CI is red on `{{MAIN_BRANCH}}`, auto-creates a GitHub issue with failure details
+3. **Check issues**: `gh issue list --repo {{GH_ORG}}/{{REPO_NAME}} --state open`
+4. **Classify** each issue as BUG or FEATURE REQUEST (CI failure issues are bugs)
+5. **For bugs**: Create branch, fix, PR, wait for CI + review, send PR email (same as Bug Patrol)
+6. **For feature requests**: Escalate with `bash scripts/send-escalation-email.sh <issue-number>`
+7. **For approved features**: Pick up and build (this is what distinguishes Feature Patrol)
 
 ## Feature Pickup Workflow
 
