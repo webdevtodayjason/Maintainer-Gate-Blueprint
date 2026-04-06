@@ -12,6 +12,10 @@ It gives maintainers a reusable operating model for:
 - clean dev/release-lane reconstruction
 - operator validation before promotion to `main`
 - separate handling for public-docs and multi-repo work
+- **automated patrol loops** (Bug Patrol + Feature Patrol on separate machines)
+- **PR quality gates** (CI → Code Review → Email → Merge)
+- **incident response** and health monitoring
+- **changelog and version management**
 
 This is for projects where multiple agents, humans, or automation threads are
 working in parallel and maintainers need a reliable way to prevent regressions,
@@ -35,8 +39,9 @@ repeatable, and machine-checkable.
 
 The blueprint includes:
 
-- reusable `ops/` structure
-- maintainer runbooks
+- reusable `ops/` structure with 14 runbooks
+- maintainer runbooks (merge gate, handoff, dev workflow)
+- **DevOps automation runbooks** (bug patrol, feature patrol, PR workflow, incident response, health monitoring, daily digest, changelog, ops sync)
 - slice registry and journal conventions
 - PR and issue templates
 - CI intake checks
@@ -62,7 +67,32 @@ maintainer-gate-blueprint/
 │   └── maintainer-task-footer.md
 ├── templates/
 │   ├── .github/
+│   │   ├── workflows/ci.yml
+│   │   ├── pull_request_template.md
+│   │   └── ISSUE_TEMPLATE/
+│   │       ├── bug_report.yml
+│   │       └── feature_request.yml
 │   ├── ops/
+│   │   ├── README.md
+│   │   ├── runbooks/
+│   │   │   ├── bug-fix.md              # End-to-end bug fix workflow
+│   │   │   ├── bug-patrol.md           # Automation Mac — auto-fix bugs
+│   │   │   ├── feature-patrol.md       # Primary Mac — build features
+│   │   │   ├── pr-workflow.md          # PR + quality gates + email
+│   │   │   ├── incident-response.md    # Site down? Start here
+│   │   │   ├── health-monitoring.md    # Deep health checks
+│   │   │   ├── daily-digest.md         # Morning summary report
+│   │   │   ├── changelog.md           # Version management
+│   │   │   ├── ops-sync.md            # Keep tracking in sync
+│   │   │   ├── dev-workflow.md         # Day-to-day development
+│   │   │   ├── maintainer-gate.md      # Merge validation
+│   │   │   ├── research-planning.md    # Planning workflow
+│   │   │   ├── slice-management.md     # Work isolation
+│   │   │   └── threadmaster-handoff.md # Handoff packets
+│   │   ├── rules/
+│   │   ├── projects/
+│   │   ├── slices/
+│   │   └── log/
 │   └── scripts/
 ├── package.json
 └── README.md
@@ -108,41 +138,73 @@ node bin/apply-blueprint.mjs /tmp/my-project-blueprint.json
 The installer replaces `{{PLACEHOLDER}}` tokens in template files using the
 manifest JSON values.
 
-Core fields:
+### Core Fields
 
-- `PROJECT_NAME`
-- `REPO_NAME`
-- `REPO_ROOT_PATH`
-- `DOCS_REPO_PATH`
-- `DOCS_SITE_URL`
-- `ISSUE_TRACKER_NAME`
-- `ISSUE_TRACKER_NOTE`
-- `THREADMASTER_ROLE`
-- `OPERATOR_ROLE`
-- `DEV_BRANCH`
-- `MAIN_BRANCH`
-- `DEV_WORKSPACE_PATH`
-- `DEVELOP_CLEAN_PATH`
-- `TRUNK_CLEAN_PATH`
-- `PACKAGE_MANAGER_INSTALL_COMMAND`
-- `CI_BUILD_COMMAND`
-- `CI_CHECK_COMMAND`
-- `CI_TEST_COMMAND`
-- `CI_PROTOCOL_COMMAND`
-- `CI_DASHBOARD_COMMAND`
-- `RUNTIME_VERSION`
+| Token | Purpose | Example |
+|-------|---------|---------|
+| `PROJECT_NAME` | Display name | `"MyProject"` |
+| `REPO_NAME` | Repository identifier | `"my-project"` |
+| `REPO_ROOT_PATH` | Absolute path to repo | `"/Users/you/code/my-project"` |
+| `DOCS_REPO_PATH` | Path to docs repo | `"/Users/you/code/my-project-docs"` |
+| `DOCS_SITE_URL` | Public docs URL | `"https://docs.myproject.io"` |
+| `ISSUE_TRACKER_NAME` | Issue tracking system | `"Linear"` |
+| `ISSUE_TRACKER_NOTE` | Custom integration note | `"Check before significant work..."` |
+| `THREADMASTER_ROLE` | Release/merge owner | `"Threadmaster"` |
+| `OPERATOR_ROLE` | Validation/approval role | `"operator"` |
+| `DEV_BRANCH` | Integration branch | `"develop"` |
+| `MAIN_BRANCH` | Production branch | `"main"` |
+
+### Workspace Fields
+
+| Token | Purpose | Example |
+|-------|---------|---------|
+| `DEV_WORKSPACE_PATH` | Active dev workspace | `"/Users/you/code/my-project"` |
+| `DEVELOP_CLEAN_PATH` | Clean integration workspace | `"/Users/you/code/my-project-develop-clean"` |
+| `TRUNK_CLEAN_PATH` | Clean trunk workspace | `"/Users/you/code/my-project-main-clean"` |
+
+### CI Fields
+
+| Token | Purpose | Example |
+|-------|---------|---------|
+| `PACKAGE_MANAGER_INSTALL_COMMAND` | Install deps | `"npm install"` |
+| `CI_BUILD_COMMAND` | Build command | `"npm run build"` |
+| `CI_CHECK_COMMAND` | Lint/check | `"npm run lint"` |
+| `CI_TEST_COMMAND` | Test command | `"npm test"` |
+| `CI_PROTOCOL_COMMAND` | Schema validation | `"npm run check:types"` |
+| `CI_DASHBOARD_COMMAND` | Dashboard build | `"npm run build:dashboard"` |
+| `RUNTIME_VERSION` | Node/runtime version | `"22.x"` |
+
+### DevOps Automation Fields
+
+| Token | Purpose | Example |
+|-------|---------|---------|
+| `GH_ORG` | GitHub organization | `"my-org"` |
+| `SITE_URL` | Production site URL | `"https://myproject.io"` |
+| `NOTIFICATION_EMAIL` | Alert/PR email recipient | `"owner@example.com"` |
+| `AUTOMATION_MAC_NAME` | Bug Patrol machine name | `"Automation Mac"` |
+| `AUTOMATION_MAC_SESSION` | Bug Patrol tmux session | `"patrol"` |
+| `PRIMARY_MAC_NAME` | Feature Patrol machine name | `"Primary Mac"` |
+| `PRIMARY_MAC_SESSION` | Feature Patrol tmux session | `"dev"` |
 
 ## Generated Surfaces
 
 The installer writes:
 
-- `ops/` docs and rules
-- `.github/` PR and issue intake templates
-- `.github/workflows/ci.yml`
-- `scripts/check-handoff.mjs`
-- `scripts/check-pr-intake.mjs`
+- `ops/` — operational hub with 14 runbooks, rules, tracking docs
+- `.github/` — PR template, issue templates, CI workflow
+- `scripts/` — `check-handoff.mjs`, `check-pr-intake.mjs`
 
 It does not overwrite files outside the blueprint surface.
+
+### Runbook Categories
+
+| Category | Runbooks | Purpose |
+|----------|----------|---------|
+| **Automation** | bug-patrol, feature-patrol, daily-digest | Continuous monitoring loops |
+| **Quality** | pr-workflow, maintainer-gate, changelog | PR gates, merge validation, versioning |
+| **Operations** | dev-workflow, ops-sync, slice-management | Day-to-day development process |
+| **Incident** | incident-response, health-monitoring | Outage triage, deep health checks |
+| **Handoff** | threadmaster-handoff, research-planning, bug-fix | Agent coordination and task workflows |
 
 ## Adoption Guidance
 

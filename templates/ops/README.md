@@ -27,11 +27,20 @@ node scripts/check-handoff.mjs path/to/handoff.md
 ops/
 ├── README.md
 ├── runbooks/
-│   ├── dev-workflow.md
-│   ├── maintainer-gate.md
-│   ├── research-planning.md
-│   ├── slice-management.md
-│   └── threadmaster-handoff.md
+│   ├── bug-fix.md                # End-to-end bug fix workflow
+│   ├── bug-patrol.md              # Automation Mac — auto-fix bugs
+│   ├── feature-patrol.md          # Primary Mac — build features
+│   ├── pr-workflow.md             # PR + quality gates + email
+│   ├── incident-response.md       # Site down? Start here
+│   ├── health-monitoring.md       # Deep health checks beyond curl
+│   ├── daily-digest.md            # Morning summary report
+│   ├── changelog.md               # Version management
+│   ├── ops-sync.md                # Keep REGISTRY/ACTIVE/JOURNAL in sync
+│   ├── dev-workflow.md            # Day-to-day development flow
+│   ├── maintainer-gate.md         # Merge validation checklist
+│   ├── research-planning.md       # Planning/research workflow
+│   ├── slice-management.md        # Work isolation and tracking
+│   └── threadmaster-handoff.md    # Handoff packet structure
 ├── projects/
 │   └── ACTIVE.md
 ├── rules/
@@ -44,6 +53,27 @@ ops/
 └── log/
     └── JOURNAL.md
 ```
+
+## Patrol Stations
+
+Two machines run continuous AI agent loops for automated monitoring and development:
+
+| Station | Machine | Runbook | What It Does |
+|---------|---------|---------|-------------|
+| **Bug Patrol** | {{AUTOMATION_MAC_NAME}} | `runbooks/bug-patrol.md` | Monitors issues every 30 min, auto-fixes bugs, escalates feature requests |
+| **Feature Patrol** | {{PRIMARY_MAC_NAME}} | `runbooks/feature-patrol.md` | Monitors issues, builds approved features, health checks |
+
+Both share the same quality gates: `runbooks/pr-workflow.md`
+
+## Quality Gates
+
+Every PR must pass these gates in order before merge:
+
+```
+Create branch → Build → Create PR → CI → Code Review → PR Email → Merge
+```
+
+See `runbooks/pr-workflow.md` for details.
 
 ## Issue Tracker
 

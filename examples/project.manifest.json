@@ -19,5 +19,13 @@
   "CI_TEST_COMMAND": "pnpm test",
   "CI_PROTOCOL_COMMAND": "pnpm protocol:check",
   "CI_DASHBOARD_COMMAND": "pnpm --dir dashboard build",
-  "RUNTIME_VERSION": "22.x"
+  "RUNTIME_VERSION": "22.x",
+
+  "GH_ORG": "your-github-org",
+  "SITE_URL": "https://example.com",
+  "NOTIFICATION_EMAIL": "owner@example.com",
+  "AUTOMATION_MAC_NAME": "Automation Mac",
+  "AUTOMATION_MAC_SESSION": "patrol",
+  "PRIMARY_MAC_NAME": "Primary Mac",
+  "PRIMARY_MAC_SESSION": "dev"
 }
