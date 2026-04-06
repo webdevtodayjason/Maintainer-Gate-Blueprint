@@ -13,6 +13,7 @@
 - Never push a review fix without commenting on the PR with what was flagged, what was changed, and the commit hash. Every correction needs an audit trail.
 - Never merge without all quality gates: CI green + review complete + email sent.
 - Never leave a bug fix PR open after all quality gates pass. CI green + review clear + email sent = MERGE IMMEDIATELY. An unmerged green PR is an incomplete task.
+- Never create multiple PRs in a single patrol cycle. All bug fixes found in one cycle go on ONE branch, ONE PR, ONE merge. Each merge triggers a deploy — batching prevents deploy spam.
 - Never skip changelog updates — every feature, fix, and security change gets documented.
 
 ## Feature Requests

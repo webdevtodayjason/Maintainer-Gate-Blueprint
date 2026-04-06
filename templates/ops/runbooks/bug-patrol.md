@@ -72,28 +72,48 @@ When scanning open issues, **skip issues that have been claimed by the feature a
 - Tags or labels indicating the issue is assigned to feature development
 - Any comment from the {{OPERATOR_ROLE}} approving and assigning the work
 
-## Bug Fix Workflow (Per Issue)
+## Bug Fix Workflow (Batched Per Cycle)
 
-Follow `ops/runbooks/bug-fix.md`:
+**CRITICAL: All bugs found in a single patrol cycle are fixed on ONE branch, in ONE PR, with ONE merge.** This prevents deploy spam — each merge triggers a deploy, so batching keeps it to one deploy per cycle.
 
-1. **Identify**: `gh issue view <number> --repo {{GH_ORG}}/{{REPO_NAME}}`
-2. **Branch**: `git checkout -b auto/bugfix-{issue}`
-3. **Scout**: Investigate root cause
-4. **Fix**: Minimal change, follow project rules
-5. **Local verify**: `{{CI_BUILD_COMMAND}}` must pass
-6. **Create PR**: `gh pr create --repo {{GH_ORG}}/{{REPO_NAME}}`
-7. **Wait for CI**: `gh pr checks {pr-number} --repo {{GH_ORG}}/{{REPO_NAME}} --watch` — if fails, fix and push
-8. **Wait for code review**: Check for review comments — if suggestions, fix, push, comment on PR with what you changed (audit trail)
-9. **Send PR email**: `bash scripts/send-pr-email.sh {pr-number}` — ONLY after CI green + review clear
-10. **MERGE PR (MANDATORY)**: `gh pr merge {pr-number} --repo {{GH_ORG}}/{{REPO_NAME}} --merge --delete-branch` — **CI green + review clear + email sent = MERGE NOW. An unmerged green PR is an incomplete task. Do NOT move to the next bug until the PR is merged.**
-11. **Close GitHub Issue**: `gh issue close <number> --repo {{GH_ORG}}/{{REPO_NAME}} --comment "Fixed in PR #X: ..."` with detailed resolution
-12. **Update Changelog**: If the fix is significant
+### Phase 1: Fix All Bugs (commit but do NOT create PR yet)
+
+1. **Create one branch for the cycle**: `git checkout -b auto/bugfix-batch-YYYY-MM-DD`
+2. **For each open bug** (in priority order: CRITICAL → HIGH → MEDIUM → LOW):
+   a. **Identify**: `gh issue view <number> --repo {{GH_ORG}}/{{REPO_NAME}}`
+   b. **Scout**: Investigate root cause
+   c. **Fix**: Minimal change, follow project rules
+   d. **Commit** the fix (reference the issue): `fix(GH #N): description`
+   e. **Move to next bug** — do NOT create a PR yet
+3. **After all bugs are fixed on the branch**: `{{CI_BUILD_COMMAND}}` must pass with all fixes together
+
+### Phase 2: One PR for the Batch
+
+4. **Create ONE PR** covering all fixes:
+   ```bash
+   gh pr create --repo {{GH_ORG}}/{{REPO_NAME}} \
+     --title "fix: Batch bug fixes — GH #X, #Y, #Z" \
+     --body "Fixes #X, #Y, #Z in a single batch."
+   ```
+5. **Wait for CI**: `gh pr checks {pr-number} --repo {{GH_ORG}}/{{REPO_NAME}} --watch` — if fails, fix and push
+6. **Wait for code review**: Check for review comments — if suggestions, fix, push, comment on PR with what you changed (audit trail)
+7. **Send PR email**: `bash scripts/send-pr-email.sh {pr-number}` — ONLY after CI green + review clear
+
+### Phase 3: Merge and Close
+
+8. **MERGE PR (MANDATORY)**: `gh pr merge {pr-number} --repo {{GH_ORG}}/{{REPO_NAME}} --merge --delete-branch` — **CI green + review clear + email sent = MERGE NOW. An unmerged green PR is an incomplete task.**
+9. **Close ALL GitHub Issues** in the batch with detailed resolution comments
+10. **Update Changelog**: Add all fixes to changelog
+
+### Single Bug Exception
+
+If there's only one bug in the cycle, the workflow is the same — one branch, one PR, one merge.
 
 ## Loop Behavior
 
 - Runs every 30 minutes while the session is active
 - Each cycle is independent — if no new issues, report "No new issues"
-- Multiple issues in one cycle get handled in priority order (CRITICAL → HIGH → MEDIUM → LOW)
+- **All bugs in a cycle are batched into ONE PR** — never create multiple PRs per cycle
 
 ## Quick Reference
 
