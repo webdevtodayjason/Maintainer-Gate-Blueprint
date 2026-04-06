@@ -19,10 +19,19 @@ Start the feature patrol loop:
 
 ## What Feature Patrol Does
 
-Every cycle:
+Every cycle follows a **sync → review → act** sequence:
 
-1. **Health check**: `curl -s -o /dev/null -w "%{http_code}" {{SITE_URL}}` — alert if non-200
-2. **CI health check**: `bash scripts/check-ci-health.sh --auto-issue` — if CI is red on `{{MAIN_BRANCH}}`, auto-creates a GitHub issue with failure details
+### Phase 0: Sync and Review (MANDATORY)
+
+**Follow `ops/runbooks/loop-contract.md`** — pull latest, re-read this runbook + never-do.md + pr-workflow.md, check ops state. Never run on stale instructions.
+
+### Phase 1: Health Checks
+
+1. **Site health**: `curl -s -o /dev/null -w "%{http_code}" {{SITE_URL}}` — alert if non-200
+2. **CI health**: `bash scripts/check-ci-health.sh --auto-issue` — if CI is red on `{{MAIN_BRANCH}}`, auto-creates a GitHub issue
+
+### Phase 2: Issue Triage
+
 3. **Check issues**: `gh issue list --repo {{GH_ORG}}/{{REPO_NAME}} --state open`
 4. **Classify** each issue as BUG or FEATURE REQUEST (CI failure issues are bugs)
 5. **For bugs**: Create branch, fix, PR, wait for CI + review, send PR email (same as Bug Patrol)

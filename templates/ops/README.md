@@ -34,6 +34,7 @@ ops/
 │   ├── incident-response.md       # Site down? Start here
 │   ├── health-monitoring.md       # Deep health checks beyond curl
 │   ├── daily-digest.md            # Morning summary report
+│   ├── loop-contract.md           # Phase 0 sync — all loops must follow
 │   ├── changelog.md               # Version management
 │   ├── ops-sync.md                # Keep REGISTRY/ACTIVE/JOURNAL in sync
 │   ├── dev-workflow.md            # Day-to-day development flow

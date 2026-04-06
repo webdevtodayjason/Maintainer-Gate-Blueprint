@@ -21,6 +21,9 @@
 - Never build features without {{OPERATOR_ROLE}} approval.
 - Never skip escalation email for feature requests: `bash scripts/send-escalation-email.sh <issue-number>`
 
+## Loop Discipline
+- Never start a loop cycle without running Phase 0 (sync and review). Pull latest, re-read your runbook and ops rules from disk. See `ops/runbooks/loop-contract.md`.
+
 ## Production Safety
 - Never ignore a deployment failure or site outage — send alert immediately.
 - Never modify the production database without a backup.
