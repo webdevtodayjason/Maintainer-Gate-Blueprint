@@ -31,8 +31,23 @@ If CI fails: read the error, fix it, push to the branch, wait for CI to re-run. 
 After CI passes, check for review comments:
 ```bash
 gh pr view <pr-number> --repo {{GH_ORG}}/{{REPO_NAME}} --json reviews,comments
+gh api repos/{{GH_ORG}}/{{REPO_NAME}}/pulls/<pr-number>/comments --jq '.[].body'
 ```
-If the reviewer has suggestions: fix them, push, wait for re-review. Repeat until approved or no blocking comments.
+If the reviewer has suggestions:
+1. Fix them in code
+2. Push the fix to the branch
+3. **MANDATORY: Comment on the PR** explaining what you fixed. Example:
+   ```bash
+   gh pr comment <pr-number> --repo {{GH_ORG}}/{{REPO_NAME}} --body "Addressed review feedback:
+   - Fixed [specific issue 1]
+   - Fixed [specific issue 2]
+   
+   Pushed update — waiting for re-review."
+   ```
+4. Wait for re-review
+5. Repeat until approved or no blocking comments
+
+**Every correction push MUST have a PR comment.** This creates an audit trail of what was changed and why. Never push a silent fix — always document it on the PR.
 
 ### Gate 3: PR Email (ONLY after gates 1+2 pass)
 
