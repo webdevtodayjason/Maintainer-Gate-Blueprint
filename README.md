@@ -133,6 +133,21 @@ cp examples/project.manifest.json /tmp/my-project-blueprint.json
 node bin/apply-blueprint.mjs /tmp/my-project-blueprint.json
 ```
 
+## AI Agent Setup
+
+Point any AI agent (Claude Code, Codex, etc.) at this repo and give it this instruction:
+
+> Apply the Maintainer Gate Blueprint from `/path/to/Maintainer-Gate-Blueprint` to this repo. Read `playbooks/ai-agent-setup.md` for the full step-by-step process, then create a manifest and run the installer.
+
+The agent setup guide covers:
+- How to auto-detect manifest values from the target repo
+- Greenfield vs brownfield adoption path selection
+- Post-install verification and customization
+- Patrol loop setup for multi-machine automation
+- Branch protection configuration
+
+See **[`playbooks/ai-agent-setup.md`](playbooks/ai-agent-setup.md)** for the complete instructions.
+
 ## Manifest Values
 
 The installer replaces `{{PLACEHOLDER}}` tokens in template files using the
