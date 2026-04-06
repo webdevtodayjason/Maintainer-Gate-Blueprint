@@ -10,7 +10,9 @@
 
 ## Quality Gates
 - Never send PR email until CI passes AND code review has no blocking issues.
+- Never push a review fix without commenting on the PR with what was flagged, what was changed, and the commit hash. Every correction needs an audit trail.
 - Never merge without all quality gates: CI green + review complete + email sent.
+- Never leave a bug fix PR open after all quality gates pass. CI green + review clear + email sent = MERGE IMMEDIATELY. An unmerged green PR is an incomplete task.
 - Never skip changelog updates — every feature, fix, and security change gets documented.
 
 ## Feature Requests

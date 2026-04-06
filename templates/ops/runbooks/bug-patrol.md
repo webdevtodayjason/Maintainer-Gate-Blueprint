@@ -76,15 +76,17 @@ When scanning open issues, **skip issues that have been claimed by the feature a
 Follow `ops/runbooks/bug-fix.md`:
 
 1. **Identify**: `gh issue view <number> --repo {{GH_ORG}}/{{REPO_NAME}}`
-2. **Claim slice** in REGISTRY (if significant)
+2. **Branch**: `git checkout -b auto/bugfix-{issue}`
 3. **Scout**: Investigate root cause
 4. **Fix**: Minimal change, follow project rules
-5. **Build**: `{{CI_BUILD_COMMAND}}` must pass
-6. **Create PR**: `gh pr create` with detailed description
-7. **Wait for quality gates**: CI → Code review → all green
-8. **Send PR email**: `bash scripts/send-pr-email.sh <pr-number>`
-9. **Close GitHub Issue**: `gh issue close <number> --repo {{GH_ORG}}/{{REPO_NAME}} --comment "Fixed: ..."`
-10. **Update Changelog**: If the fix is significant
+5. **Local verify**: `{{CI_BUILD_COMMAND}}` must pass
+6. **Create PR**: `gh pr create --repo {{GH_ORG}}/{{REPO_NAME}}`
+7. **Wait for CI**: `gh pr checks {pr-number} --repo {{GH_ORG}}/{{REPO_NAME}} --watch` — if fails, fix and push
+8. **Wait for code review**: Check for review comments — if suggestions, fix, push, comment on PR with what you changed (audit trail)
+9. **Send PR email**: `bash scripts/send-pr-email.sh {pr-number}` — ONLY after CI green + review clear
+10. **MERGE PR (MANDATORY)**: `gh pr merge {pr-number} --repo {{GH_ORG}}/{{REPO_NAME}} --merge --delete-branch` — **CI green + review clear + email sent = MERGE NOW. An unmerged green PR is an incomplete task. Do NOT move to the next bug until the PR is merged.**
+11. **Close GitHub Issue**: `gh issue close <number> --repo {{GH_ORG}}/{{REPO_NAME}} --comment "Fixed in PR #X: ..."` with detailed resolution
+12. **Update Changelog**: If the fix is significant
 
 ## Loop Behavior
 

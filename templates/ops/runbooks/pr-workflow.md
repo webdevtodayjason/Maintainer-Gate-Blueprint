@@ -61,10 +61,22 @@ bash scripts/send-pr-email.sh <pr-number>
 
 **NEVER send the email on a red build or unresolved review comments.**
 
-### Gate 4: Merge
+### Gate 4: MERGE (MANDATORY — DO NOT SKIP)
 
-- Bug fix PRs can auto-merge after all gates pass
-- Feature PRs wait for {{OPERATOR_ROLE}} review
+**Bug fix PRs MUST be merged immediately after gates 1-3 pass. Do NOT leave PRs open.**
+
+```bash
+gh pr merge <pr-number> --repo {{GH_ORG}}/{{REPO_NAME}} --merge --delete-branch
+```
+
+Merge checklist (all must be true):
+- [ ] CI is green
+- [ ] Code review has no unresolved comments
+- [ ] PR email has been sent
+
+If all three are true: **MERGE NOW.** An open PR with all gates green is an incomplete task.
+
+Feature PRs are the only exception — they wait for {{OPERATOR_ROLE}} review.
 
 ## PR Email Notification (MANDATORY)
 
